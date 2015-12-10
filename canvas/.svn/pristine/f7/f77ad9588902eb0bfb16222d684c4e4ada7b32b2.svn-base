@@ -1,0 +1,48 @@
+import static org.junit.Assert.*;
+import org.junit.*;
+
+import edu.nyu.model.Model;
+import edu.nyu.views.Canvas;
+import edu.nyu.views.IListener;
+
+public class ModelTests {
+  Model model;
+  @Before
+  public void setUp() {
+    model = Model.getInstance();
+  }
+  
+  @Test
+  public void testRegisterListener() {
+    new Canvas(model);
+    new Canvas(model);
+    assertEquals(2, model.numberOfListenersRegistered());
+  }
+  
+  @Test
+  public void testSingletonModel() {
+    Model model2 = Model.getInstance();
+    assertEquals(model2, model);
+  }
+
+  @Test
+  public void testDuplicateListenerRegistration() {
+    IListener canvas1 =  new Canvas(model);
+    assertEquals(-1, model.registerListener(canvas1));
+  }
+  
+  @Test
+  public void testRemoveListener() {
+    new Canvas(model);
+    new Canvas(model);
+    IListener canvas1 =  new Canvas(model);
+    assertEquals(3, model.numberOfListenersRegistered());
+    model.removeListener(canvas1);
+    assertEquals(2, model.numberOfListenersRegistered());
+  }
+  
+  @After
+  public void cleanUp() {
+    model.setInstanceOfModelToNull();
+  }
+}
